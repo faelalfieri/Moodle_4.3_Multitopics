@@ -18,21 +18,13 @@
         courseSectionTabs.classList.add("hidden");
     }
 
-    // Se a URL contém #conteudo, oculta as 6 primeiras LIs dentro da UL com classe .course-section-tabs
-    //Esse código é para o menu1, e ele não abre o conteudo da seção, pois não tem link na âncora "conteúdo programático"
-    // if (hasConteudoHash) {
-    //     toggleListVisibility(".course-section-tabs ul", 6); // Oculta as 6 primeiras LIs
-    //     hideFirstLiInTopicList(); // Oculta o primeiro LI da lista de tópicos
-    //}
-
     // Se a URL contém &sectionid, oculta as 6 primeiras LIs dentro da UL com classe .course-section-tabs
     if (hasSectionId) {
         toggleListVisibility(".course-section-tabs ul", 6); // Oculta as 6 primeiras LIs
     }
     //obs.: Se ocultar a partir da sétima é possivel criar uma abertura com uma seção oculta para qndo clicar no conteúdo programático
-});
 
-// Função para ocultar as primeiras N LIs de uma UL e exibir as demais
+    // Função para ocultar as primeiras N LIs de uma UL e exibir as demais
 function toggleListVisibility(ulSelector, visibleItemsCount) {
     const ul = document.querySelector(ulSelector);
     if (ul) {
@@ -58,6 +50,10 @@ function hideFirstLiInTopicList() {
         }
     }
 }
+
+});
+
+
 /**
  * Para os 6 primeiros itens do menu principal, não pode ter um second-section-page, no segundo nível, apenas no terceiro nível sendo tópico fexivel ou não.
  * Caso seja da forma acima, o menu sequencial após o 6 primeiros itens principais também ficam visíveis.
