@@ -1,4 +1,4 @@
- window.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('DOMContentLoaded', () => {
         const url = new URL(window.location.href);
 
         // 1. Garante sectionid=0
@@ -8,46 +8,49 @@
             return;
         }
 
-        const ul = document.querySelector('.course-section-tabs ul');
-        if (!ul) return;
+        const container = document.querySelector('.course-section-tabs');
+        if (!container) return;
 
-        ul.style.border = 'none'; // remove borda da ul
+        // Seleciona todos os  filhos das ULs nav-tabs dentro do container, como lista única e linear
+        const allLi = container.querySelectorAll('ul.nav.nav-tabs.mb-3 > li');
+        if (allLi.length === 0) return;
 
-        const items = ul.querySelectorAll('li');
+        // Remove borda das ULs
+        container.querySelectorAll('ul.nav.nav-tabs.mb-3').forEach(ul => {
+            ul.style.border = 'none';
+        });
+
         const sectionId = url.searchParams.get('sectionid');
         const hasConteudoHash = window.location.hash === '#conteudo';
 
-        // 2 e 3 - controla visibilidade das li
         function updateVisibility() {
             if (sectionId === '0' || !hasConteudoHash) {
-                // oculta todas
-                items.forEach(li => {
-                    li.style.display = 'none';
-                });
+                // Oculta todas li
+                allLi.forEach(li => li.style.display = 'none');
             } else {
-                // oculta só as primeiras 5
-                items.forEach((li, index) => {
+                // Oculta só as primeiras 5 li, mostra as posteriores
+                allLi.forEach((li, index) => {
                     li.style.display = index < 5 ? 'none' : '';
                 });
             }
         }
 
-        // 4 e 5 - adiciona eventos nos links dentro das li, respeitando regras
         function setupLinkClicks() {
-            const first5Li = Array.from(items).slice(0, 5);
+            const first5Li = Array.from(allLi).slice(0, 5);
+            const after5Li = Array.from(allLi).slice(5);
+
             const first5Links = new Set();
             first5Li.forEach(li => {
                 li.querySelectorAll('a[href]').forEach(link => first5Links.add(link));
             });
 
-            const after5Li = Array.from(items).slice(5);
             const after5Links = new Set();
             after5Li.forEach(li => {
                 li.querySelectorAll('a[href]').forEach(link => after5Links.add(link));
             });
 
-            // Remove event listeners antigos antes de adicionar para evitar duplicados
-            document.querySelectorAll('.course-section-tabs ul li a[href]').forEach(link => {
+            // Remove event listeners antes de adicionar (para evitar duplicação)
+            container.querySelectorAll('a[href]').forEach(link => {
                 link.removeEventListener('click', linkClickHandler);
                 link.addEventListener('click', linkClickHandler);
             });
@@ -58,7 +61,7 @@
                 const currentHash = window.location.hash;
 
                 if (first5Links.has(link)) {
-                    // 4 - clicou link das primeiras 5 li
+                    // Link clicado dentro das primeiras 5 li (ou descendentes)
                     if (currentHash === '#conteudo') {
                         event.preventDefault();
                         const targetUrl = new URL(link.href, window.location.origin);
@@ -66,24 +69,20 @@
                         window.location.assign(targetUrl.toString());
                         return;
                     }
-                    // Sem #conteudo, deixa navegar normalmente
+                    // Sem #conteudo, navega normalmente
                     return;
                 }
 
                 if (after5Links.has(link)) {
-                    // 5 - clicou link após a 5 li
-                    if (!href.includes('#conteudo')) {
-                        event.preventDefault();
-                        const targetUrl = new URL(link.href, window.location.origin);
-                        targetUrl.hash = 'conteudo';
-                        window.location.assign(targetUrl.toString());
-                        return;
-                    }
-                    // Se já tem #conteudo no href, deixa navegar normalmente
+                    // Link clicado dentro das li após a 5ª (ou descendentes)
+                    event.preventDefault();
+                    const targetUrl = new URL(link.href, window.location.origin);
+                    targetUrl.hash = 'conteudo'; // adiciona #conteudo
+                    window.location.assign(targetUrl.toString());
                     return;
                 }
 
-                // Se o link não está nas li da .course-section-tabs ul, deixa navegar normalmente
+                // Links fora da hierarquia navegam normalmente
             }
         }
 
