@@ -1,0 +1,66 @@
+<ul class="nav nav-tabs">
+    <li class="nav-item myNav">
+        <a class="nav-link navMy" href="/course/view.php?id=40" title="Bússola">Abertura</a>
+    </li>
+    <li class="nav-item myNav">
+        <a class="nav-link navMy" href="/course/view.php?id=40&amp;sectionid=1482" title="Avisos e Notícias">Comunicados</a>
+    </li>
+    <li class="nav-item myNav">
+        <a class="nav-link navMy dropdown-toggle" href="/course/view.php?id=40&amp;sectionid=1487#conteudo" title="Conteúdo do Curso">Conteúdo Programático </a>
+    </li>
+    <li class="nav-item myNav">
+        <a class="nav-link navMy " href="/course/view.php?id=40&amp;sectionid=1484" title="Material Complementar">Biblioteca</a>
+    </li>
+    <li class="nav-item myNav">
+        <a class="nav-link navMy" href="/course/view.php?id=40&amp;sectionid=1485" title="Documentos | Acompanhamento de Desempenho">Autogestão</a>
+    </li>
+    <li class="nav-item dropdown">
+        <a style="text-decoration: none;" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Autogestão </a>
+        <ul class="nav nav-tabs" style="list-style: none;list-style-type: none;line-height: 1.5rem;border-bottom: none;">
+            <div class="dropdown-menu" style="will-change: transform; position: absolute; transform: translate3d(0px, 40px, 0px); top: 0px; left: 0px;" x-placement="bottom-start">
+                <a style="display: block; text-decoration: none;" class="dropdown-item" href="#"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> Cronograma</a>
+                <a style="display: block; text-decoration: none;" class="dropdown-item " href="#"><i class="fa fa-address-book-o fa-fw" aria-hidden="true"></i> Orientações Iniciais</a>
+                <a style="display: block; text-decoration: none;" class="dropdown-item" href="/grade/report/grader/index.php?id=36"><i class="fa fa-table fa-fw" aria-hidden="true"></i> Relatório de Notas</a>
+                <a style="text-decoration: none;" class="dropdown-item" href="/user/index.php?id=36"><i class="fa fa-users fa-fw" aria-hidden="true"></i> Participantes</a>
+                <a style="display: block; text-decoration: none;" class="dropdown-item" href="#"><i class="fa fa-book fa-fw" aria-hidden="true"></i> Glossário</a>
+                <a style="display: block; text-decoration: none;" class="dropdown-item" href="#"><i class="fa fa-thumbs-up fa-fw" aria-hidden="true"></i> Créditos e Direitos Autorais</a>
+                <div class="dropdown-divider"></div>
+                <a style="display: block; text-decoration: none;" class="dropdown-item" href="/static/faleConosco.html"><i class="fa fa-life-ring fa-fw" aria-hidden="true"></i> Fale Conosco</a>
+            </div>
+        </ul>
+    </li>
+    <li class="nav-item myNav">
+        <a class="nav-link navMy" href="/course/view.php?id=40&amp;sectionid=1486" title="Avaliação do Curso | Certificado">Conclusão</a>
+    </li>
+</ul>
+
+<script>
+    function activateNavTabs() {
+        document.addEventListener("DOMContentLoaded", function() {
+
+            document.querySelectorAll(".navMy").forEach(tab => {
+                tab.addEventListener("click", function(event) {
+                    // Se a aba não for desabilitada
+                    if (!this.classList.contains("disabled")) {
+                        document.querySelectorAll(".navMy").forEach(link => link.classList.remove("active"));
+                        this.classList.add("active");
+                        // Armazena a aba ativa no localStorage
+                        localStorage.setItem("activeTab", this.href);
+                    }
+                });
+            });
+
+            // Mantém a aba ativa após o reload da página
+            const activeTab = localStorage.getItem("activeTab");
+            if (activeTab) {
+                document.querySelectorAll(".navMy").forEach(tab => {
+                    if (tab.href === activeTab) {
+                        tab.classList.add("active");
+                    }
+                });
+            }
+        });
+    }
+
+    activateNavTabs();
+</script>
