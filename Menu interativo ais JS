@@ -1,15 +1,15 @@
-<ul class="nav nav-tabs">
+<ul id="main-tabs" class="nav nav-tabs">
     <li class="nav-item myNav">
-        <a class="nav-link navMy" href="/course/view.php?id=40" title="Bússola">Abertura</a>
+        <a class="nav-link navMy" href="/course/view.php?id=40&amp;sectionid=0" title="Bússola">Abertura</a>
     </li>
     <li class="nav-item myNav">
         <a class="nav-link navMy" href="/course/view.php?id=40&amp;sectionid=1482" title="Avisos e Notícias">Comunicados</a>
     </li>
     <li class="nav-item myNav">
-        <a class="nav-link navMy dropdown-toggle" href="/course/view.php?id=40&amp;sectionid=1487#conteudo" title="Conteúdo do Curso">Conteúdo Programático </a>
+        <a class="nav-link navMy" href="/course/view.php?id=40&amp;sectionid=1487#conteudo" title="Conteúdo do Curso">Conteúdo Programático </a>
     </li>
     <li class="nav-item myNav">
-        <a class="nav-link navMy " href="/course/view.php?id=40&amp;sectionid=1484" title="Material Complementar">Biblioteca</a>
+        <a class="nav-link navMy" href="/course/view.php?id=40&amp;sectionid=1484" title="Material Complementar">Biblioteca</a>
     </li>
     <li class="nav-item myNav">
         <a class="nav-link navMy" href="/course/view.php?id=40&amp;sectionid=1485" title="Documentos | Acompanhamento de Desempenho">Autogestão</a>
@@ -19,7 +19,7 @@
         <ul class="nav nav-tabs" style="list-style: none;list-style-type: none;line-height: 1.5rem;border-bottom: none;">
             <div class="dropdown-menu" style="will-change: transform; position: absolute; transform: translate3d(0px, 40px, 0px); top: 0px; left: 0px;" x-placement="bottom-start">
                 <a style="display: block; text-decoration: none;" class="dropdown-item" href="#"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> Cronograma</a>
-                <a style="display: block; text-decoration: none;" class="dropdown-item " href="#"><i class="fa fa-address-book-o fa-fw" aria-hidden="true"></i> Orientações Iniciais</a>
+                <a style="display: block; text-decoration: none;" class="dropdown-item" href="#"><i class="fa fa-address-book-o fa-fw" aria-hidden="true"></i> Orientações Iniciais</a>
                 <a style="display: block; text-decoration: none;" class="dropdown-item" href="/grade/report/grader/index.php?id=36"><i class="fa fa-table fa-fw" aria-hidden="true"></i> Relatório de Notas</a>
                 <a style="text-decoration: none;" class="dropdown-item" href="/user/index.php?id=36"><i class="fa fa-users fa-fw" aria-hidden="true"></i> Participantes</a>
                 <a style="display: block; text-decoration: none;" class="dropdown-item" href="#"><i class="fa fa-book fa-fw" aria-hidden="true"></i> Glossário</a>
@@ -35,32 +35,41 @@
 </ul>
 
 <script>
-    function activateNavTabs() {
-        document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", () => {
+        const mainTabs = document.getElementById("main-tabs");
+        if (!mainTabs) return;
 
-            document.querySelectorAll(".navMy").forEach(tab => {
-                tab.addEventListener("click", function(event) {
-                    // Se a aba não for desabilitada
-                    if (!this.classList.contains("disabled")) {
-                        document.querySelectorAll(".navMy").forEach(link => link.classList.remove("active"));
-                        this.classList.add("active");
-                        // Armazena a aba ativa no localStorage
-                        localStorage.setItem("activeTab", this.href);
-                    }
-                });
+        const navLinks = mainTabs.querySelectorAll(".navMy");
+        const url = window.location.href;
+        const params = new URLSearchParams(window.location.search);
+        const sectionid = params.get("sectionid");
+        const STORAGE_KEY = "activeTab_mainTabs";
+
+        const activate = link => {
+            for (const l of navLinks) l.classList.remove("active");
+            if (link) link.classList.add("active");
+        };
+
+        // Ativação inicial baseada na URL ou localStorage
+        if (url.includes("#conteudo")) {
+            const link = [...navLinks].find(l => l.href.includes("#conteudo"));
+            activate(link);
+            if (link) localStorage.setItem(STORAGE_KEY, link.href);
+        } else if (sectionid === "0") {
+            activate(navLinks[0]);
+            if (navLinks[0]) localStorage.setItem(STORAGE_KEY, navLinks[0].href);
+        } else {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            const link = [...navLinks].find(l => l.href === saved);
+            activate(link);
+        }
+
+        // Ativa no clique e salva no localStorage
+        for (const link of navLinks) {
+            link.addEventListener("click", () => {
+                activate(link);
+                localStorage.setItem(STORAGE_KEY, link.href);
             });
-
-            // Mantém a aba ativa após o reload da página
-            const activeTab = localStorage.getItem("activeTab");
-            if (activeTab) {
-                document.querySelectorAll(".navMy").forEach(tab => {
-                    if (tab.href === activeTab) {
-                        tab.classList.add("active");
-                    }
-                });
-            }
-        });
-    }
-
-    activateNavTabs();
+        }
+    });
 </script>
